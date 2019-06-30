@@ -1,0 +1,26 @@
+{
+  "name": "@gfxfundamentals/live-editor",
+  "version": "1.0.0",
+  "description": "live code editor",
+  "main": "na",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gfxfundamentals/live-editor.git"
+  },
+  "keywords": [
+    "editor",
+    "code"
+  ],
+  "author": "Gregg Tavares",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gfxfundamentals/live-editor/issues"
+  },
+  "homepage": "https://github.com/gfxfundamentals/live-editor#readme",
+  "dependencies": {
+    "monaco-editor": "^0.17.1"
+  }
+}
