@@ -39,6 +39,7 @@ iframe {
 .panes {
     display: flex;
     flex: 1 1 auto;
+    height: 50%;  /* this is needed for firefox. It won't actually be 50% because the flex: 1 1 auto means stretch */
 }
 .panes>div {
     display: none;
