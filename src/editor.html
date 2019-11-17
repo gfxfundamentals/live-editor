@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<html>
+<head>
 <style>
 html {
   box-sizing: border-box;
@@ -82,6 +84,9 @@ iframe {
     height: 100%;
     background: white;
 }
+.result .console .log {
+    white-space: pre;
+}
 .other>div,
 .other>div>div {
     display: flex;
@@ -153,6 +158,7 @@ iframe {
     .panebuttons>button, body {
       font-size: x-small;
     }
+}
 
 @media ( max-width: 740px ) {
     .panelogo>div>a:nth-child(1) {
@@ -173,6 +179,7 @@ iframe {
     }
 }
 </style>
+</head>
 <body>
 <div class="frame">
     <div class="tabs">
@@ -208,3 +215,4 @@ iframe {
 <script src="editor-settings.js"></script>
 <script src="editor.js"></script>
 
+</html>
