@@ -820,6 +820,8 @@ function runEditor(parent, source, language) {
  //   model: null,
     scrollBeyondLastLine: false,
     minimap: { enabled: false },
+    fontFamily: 'GFXFundamentals JetBrains Mono',
+    fontLigatures: true,
   });
 }
 
