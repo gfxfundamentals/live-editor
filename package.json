@@ -1,6 +1,6 @@
 {
   "name": "@gfxfundamentals/live-editor",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "live code editor",
   "main": "index.js",
   "scripts": {
