@@ -655,7 +655,7 @@ function setupEditor() {
   g.result.style.display = 'none';
   toggleResultPane();
 
-  if (window.innerWidth > 1200) {
+  if (window.innerWidth >= 1000) {
     toggleSourcePane(htmlParts.js.button);
   }
 
