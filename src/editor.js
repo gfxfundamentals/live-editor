@@ -456,14 +456,14 @@ function resize() {
   });
 }
 
-function makeScriptsForWorkers(scriptInfo) {
+function getScripts(scriptInfo) {
   ++blobGeneration;
 
-  function makeScriptsForWorkersImpl(scriptInfo) {
+  function getScriptsImpl(scriptInfo) {
     const scripts = [];
     if (scriptInfo.blobGenerationId !== blobGeneration) {
       scriptInfo.blobGenerationId = blobGeneration;
-      scripts.push(...scriptInfo.deps.map(makeScriptsForWorkersImpl).flat());
+      scripts.push(...scriptInfo.deps.map(getScriptsImpl).flat());
       let text = scriptInfo.source;
       scriptInfo.deps.forEach((depScriptInfo) => {
         text = text.split(depScriptInfo.fqURL).join(`worker-${basename(depScriptInfo.fqURL)}`);
@@ -476,8 +476,11 @@ function makeScriptsForWorkers(scriptInfo) {
     }
     return scripts;
   }
+  return getScriptsImpl(scriptInfo);
+}
 
-  const scripts = makeScriptsForWorkersImpl(scriptInfo);
+function makeScriptsForWorkers(scriptInfo) {
+  const scripts = getScripts(scriptInfo);
   if (scripts.length === 1) {
     return {
       js: scripts[0].text,
@@ -701,6 +704,160 @@ ${indent4(mainHTML)}
   linkElem.href = `https://stackoverflow.com/questions/ask?&tags=javascript ${tags}`;
 }
 
+function htmlTemplate(s) {
+  return `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>${s.title}</title>
+    <style>
+${s.css}
+    </style>
+  </head>
+  <body>
+${s.body}
+  </body>
+${s.script.startsWith('<')
+    ? s.script
+    : `
+  <script type="module">
+${s.script}
+  </script>
+`}
+</html>`;
+}
+
+async function openInCodeSandbox() {
+  const module = await import('/3rdparty/codesandbox-getparameter.module.js');
+  const {getParameters} = module.default;
+  const comment = `// ${g.title}
+// from ${g.url}
+
+`;
+  getSourcesFromEditor();
+  const scripts = getScripts(g.rootScriptInfo);
+  const mainScript = scripts.pop();
+  const names = scripts.map(s => s.name);
+  const files = scripts.reduce((files, {name, text: content}) => {
+    files[name] = {content};
+    return files;
+  }, {
+    "index.html": {
+      content: htmlTemplate({
+        body: fixHTMLForCodeSite(htmlParts.html.sources[0].source),
+        css: htmlParts.css.sources[0].source,
+        title: g.title,
+        script: comment + fixJSForCodeSite(mainScript.text),
+      }),
+    },
+    "sandbox.config.json": {
+      content: '{\n  "template": "static"\n}\n',
+    },
+    "package.json": {
+      content: JSON.stringify({
+        "name": "static",
+        "version": "1.0.0",
+        "description": "This is a static template with no bundling",
+        "main": "index.html",
+        "scripts": {
+          "start": "serve",
+          "build": "echo This is a static template, there is no bundler or bundling involved!"
+        },
+        "license": "MIT",
+        "devDependencies": {
+          "serve": "^11.2.0"
+        }
+      }, null, 2),
+    }
+  });
+  for (const file of Object.values(files)) {
+    for (const name of names) {
+      file.content = file.content.split(name).join(`./${name}`);
+    }
+  }
+
+  const parameters = getParameters({files});
+  const elem = document.createElement('div');
+  elem.innerHTML = `
+    <form action="https://codesandbox.io/api/v1/sandboxes/define" method="POST" target="_blank" class="hidden">
+      <input type="hidden" name="parameters" />
+      <input type="submit" />
+    </form>
+  `;
+  elem.querySelector('input[name=parameters]').value = parameters;
+  window.frameElement.ownerDocument.body.appendChild(elem);
+  elem.querySelector('form').submit();
+  window.frameElement.ownerDocument.body.removeChild(elem);
+}
+
+function openInStackBlitz() {
+  const comment = `// ${g.title}
+// from ${g.url}
+
+`;
+  getSourcesFromEditor();
+  const scripts = getScripts(g.rootScriptInfo);
+  const mainScript = scripts.pop();
+  const names = scripts.map(s => s.name);
+  const files = scripts.reduce((files, {name, text: content}) => {
+    files[name] = {content};
+    return files;
+  }, {
+    "index.html": {
+      content: htmlTemplate({
+        body: fixHTMLForCodeSite(htmlParts.html.sources[0].source),
+        css: htmlParts.css.sources[0].source,
+        title: g.title,
+        script: `<script src="index.js" type="module"></script>`,
+      }),
+    },
+    "index.js": {
+      content: comment + fixJSForCodeSite(mainScript.text),
+    },
+    // "tsconfig.json": {
+    //   content: JSON.stringify({
+    //     "compilerOptions": {
+    //       "target": "esnext"
+    //     }
+    //   }, null, 2),
+    // },
+    "package.json": {
+      content: JSON.stringify({
+        "name": "js",
+        "version": "0.0.0",
+        "private": true,
+        "dependencies": {}
+      }, null, 2),
+    }
+  });
+
+  const elem = document.createElement('div');
+  elem.innerHTML = `
+    <form action="https://stackblitz.com/run" method="POST" target="_blank" class="hidden">
+      <input type="hidden" name="project[description]" value="${g.title}">
+      <input type="hidden" name="project[dependencies]" value="{}">
+      <input type="hidden" name="project[template]" value="javascript">
+      <input type="hidden" name="project[settings]" value="{}">
+      <input type="submit" />
+    </form>
+  `;
+  const form = elem.querySelector('form');
+  for (const [name, file] of Object.entries(files)) {
+    for (const name of names) {
+      file.content = file.content.split(name).join(`./${name}`);
+    }
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = `project[files][${name}]`;
+    input.value = file.content;
+    form.appendChild(input);
+  }
+  window.frameElement.ownerDocument.body.appendChild(elem);
+  form.submit();
+  window.frameElement.ownerDocument.body.removeChild(elem);
+}
+
 document.querySelectorAll('.dialog').forEach(dialogElem => {
   dialogElem.addEventListener('click', function(e) {
     if (e.target === this) {
@@ -790,6 +947,8 @@ function setupEditor() {
   document.querySelector('.button-jsfiddle').addEventListener('click', closeExport(openInJSFiddle));
   document.querySelector('.button-jsgist').addEventListener('click', closeExport(openInJSGist));
   document.querySelector('.button-stackoverflow').addEventListener('click', closeExport(openInStackOverflow));
+  document.querySelector('.button-codepen').addEventListener('click', openInCodepen);
+  document.querySelector('.button-jsfiddle').addEventListener('click', openInStackBlitz);
 
   g.result = document.querySelector('.panes .result');
   g.resultButton = document.querySelector('.button-result');
