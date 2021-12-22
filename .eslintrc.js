@@ -4,7 +4,7 @@ module.exports = {
     "es6": true
   },
   "parserOptions": {
-    "ecmaVersion": 2017
+    "ecmaVersion": 2019
   },
   "plugins": [
     "eslint-plugin-html",
@@ -75,7 +75,7 @@ module.exports = {
     "no-multi-spaces": [0],
     "no-obj-calls": 2,
     "no-shadow": [0],
-    "no-undef": [0],
+    "no-undef": 2,
     "no-unreachable": 2,
     "one-variable-per-var/one-variable-per-var": [2],
     "optional-comma-spacing/optional-comma-spacing": [2, {"after": true}],
