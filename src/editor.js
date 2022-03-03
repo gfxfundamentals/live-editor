@@ -304,6 +304,10 @@ async function parseHTML(url, html) {
   if (tm) {
     g.title = tm[1];
   }
+  
+  if (!g.title) {
+    g.title = basename(new URL(getFQUrl(url)).pathname).replace(/-/g, ' ').replace(/\.html$/, '');
+  }
 
   const scripts = [];
   html = html.replace(externalScriptRE, function(match, blockComment, beforeType, type, src, afterType) {
