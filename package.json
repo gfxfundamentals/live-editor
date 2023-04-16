@@ -21,6 +21,6 @@
   },
   "homepage": "https://github.com/gfxfundamentals/live-editor#readme",
   "dependencies": {
-    "monaco-editor": "^0.36.1"
+    "monaco-editor": "^0.37.1"
   }
 }
