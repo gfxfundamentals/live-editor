@@ -1,9 +1,10 @@
 # GFXFundamentals Live Editor
 
 This is the live code editor used on
+[WebGPUFundamentals](https://webgpufundamentals.org),
 [WebGLFundamentals](https://webglfundamentals.org),
 [WebGL2Fundamentals](https://webgl2fundamentals.org), and
-[ThreeJSFundamentals](https://threejs.org/manual/#en/fundamentals).
+the [three.js manual](https://threejs.org/manual/#en/fundamentals).
 
 It's based on the [Monaco Editor](https://microsoft.github.io/monaco-editor/)
 which is the editor portion of Visual Studio Code
@@ -19,7 +20,7 @@ While parsing it needs to make all paths to external files to be
 fully qualified domain URLs. That is all links to images, videos,
 scripts, audio, CSS, workers, etc. It does some of this with
 user configured functions. The reason it needs to do this is because
-it runs the actual samples a blobs. There are no blob relative paths
+it runs the actual samples as blobs. There are no blob relative paths
 so all paths need to be fully qualified.
 
 It has some support for handling workers, something even codepen
@@ -38,7 +39,7 @@ will lose all breakpoints every time the user's code is run since
 a new blob is generated so the debugger can't associate previous
 breakpoints.
 
-In it's current form it is probably not entirely stand alone and is
+In its current form it is probably not entirely stand alone and is
 pretty hacky. I just separated out as I finally got tired of manually
 propogating changes between repos.
 
