@@ -3,7 +3,7 @@
 This is the live code editor used on
 [WebGLFundamentals](https://webglfundamentals.org),
 [WebGL2Fundamentals](https://webgl2fundamentals.org), and
-[ThreeJSFundamentals](https://threejsfundamentals.org).
+[ThreeJSFundamentals](https://threejs.org/manual/#en/fundamentals).
 
 It's based on the [Monaco Editor](https://microsoft.github.io/monaco-editor/)
 which is the editor portion of Visual Studio Code
