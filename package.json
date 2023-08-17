@@ -20,7 +20,7 @@
     "url": "https://github.com/gfxfundamentals/live-editor/issues"
   },
   "homepage": "https://github.com/gfxfundamentals/live-editor#readme",
-  "dependencies": {
-    "monaco-editor": "^0.37.1"
+  "devDependencies": {
+    "monaco-editor": "^0.41.0"
   }
 }
